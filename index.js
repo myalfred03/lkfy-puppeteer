@@ -32,12 +32,34 @@ const insertData = async (title, rating, ratingcount) => {
       const values = [title, rating,ratingcount];
 
       const res = await pool.query(text, values);
-     // console.log(res)
+     console.log(title)
       pool.end();
   } catch (e) {
       console.log(e);
   }
 };
+
+
+
+// function insertData(title, rating, ratingcount) {
+
+//   return new Promise(resolve => {
+//     setTimeout(function() {
+//       resolve("slow")
+
+
+//       const text = 'INSERT INTO scraping1(data1, data2, data3) VALUES ($1, $2, $3)';
+//       const values = [title, rating,ratingcount];
+//       const res = pool.query(text, values);
+//       pool.end();
+//       console.log(title)
+
+
+//     }, 2000)
+//   })
+
+// }
+
 
 async function run () {
   try { 
@@ -45,7 +67,7 @@ async function run () {
     executablePath: '/usr/bin/chromium-browser',
     headless: true
      });
-  let movie_url = 'https://www.imdb.com/title/tt6763664';
+  let movie_url = 'https://www.imdb.com/title/tt0063350';
 
   const page = await browser.newPage();
   await page.goto(movie_url);
@@ -62,7 +84,7 @@ async function run () {
       ratingCount
     }
 
-   // insertData(title,rating,ratingCount);
+   //insertData(title,rating,ratingCount);
 
   });
 
@@ -70,8 +92,9 @@ async function run () {
   
 
   await browser.close();
-  const obj1 = JSON.parse(data);
-  insertData(obj1.title,obj1.rating,obj1.ratingCount);
+  //const obj1 = JSON.parse(data);
+  str = data.ratingCount.replace(/[^\d\.\-]/g, ""); 
+  insertData(data.title, Number(data.rating), Number(str));
  }
  catch (error) {
   console.log(error);
