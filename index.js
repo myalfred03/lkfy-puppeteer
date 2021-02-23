@@ -65,12 +65,27 @@ async function run () {
   try { 
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
-    headless: true
+    headless: false
      });
-  let movie_url = 'https://www.imdb.com/title/tt0063350';
+  let movie_url = 'https://www.imdb.com/';
 
   const page = await browser.newPage();
   await page.goto(movie_url);
+  await page.waitForSelector('[type="text"]');
+  await page.focus('[type="text"]');
+  await page.keyboard.type("Arrival", {delay: 500});
+  //await page.waitFor(1000);
+  await page.keyboard.press("ArrowDown", {delay: 100});
+  await page.keyboard.press("Enter", {delay: 100});
+  await page.waitForNavigation();
+
+
+/*   await page.waitFor(1000);
+  const page2 = await browser.newPage();
+
+  await page2.goto(page.url()); */
+
+
   // await page.screenshot({path: 'RIN.png'});
   var data = await page.evaluate(() => {
 
@@ -92,7 +107,6 @@ async function run () {
   
 
   await browser.close();
-  //const obj1 = JSON.parse(data);
   str = data.ratingCount.replace(/[^\d\.\-]/g, ""); 
   insertData(data.title, Number(data.rating), Number(str));
  }
