@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
  const { Pool } = require('pg');
+ const prompt = require('prompt-sync')();
 
  
 const config = {
@@ -69,11 +70,16 @@ async function run () {
      });
   let movie_url = 'https://www.imdb.com/';
 
+
+  const movie = prompt('What is your favorite movie?');
+  console.log(`Hey there ${movie}`);
+
+
   const page = await browser.newPage();
   await page.goto(movie_url);
   await page.waitForSelector('[type="text"]');
   await page.focus('[type="text"]');
-  await page.keyboard.type("Arrival", {delay: 500});
+  await page.keyboard.type(movie, {delay: 500});
   //await page.waitFor(1000);
   await page.keyboard.press("ArrowDown", {delay: 100});
   await page.keyboard.press("Enter", {delay: 100});
