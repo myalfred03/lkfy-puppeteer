@@ -1,78 +1,22 @@
 const puppeteer = require('puppeteer');
- const { Pool } = require('pg');
- const prompt = require('prompt-sync')();
-
- 
-const config = {
-  host: 'localhost',
-  user: 'postgres',
-  password: '22103',
-  database: 'lokafyreviews'
-};
-
-const pool = new Pool(config);
-
-const getData = async () => {
-  try {
-      const res = await pool.query('select * from scraping');
-      // console.log(res)
-      console.log(res.rows);
-      pool.end();
-  } catch (e) {
-      console.log(e);
-  }
-};
-
-
-
-//getData();
-
-const insertData = async (title, rating, ratingcount) => {
-  try {
-      const text = 'INSERT INTO scraping1(data1, data2, data3) VALUES ($1, $2, $3)';
-      const values = [title, rating,ratingcount];
-
-      const res = await pool.query(text, values);
-     console.log(title)
-      pool.end();
-  } catch (e) {
-      console.log(e);
-  }
-};
-
-
-
-// function insertData(title, rating, ratingcount) {
-
-//   return new Promise(resolve => {
-//     setTimeout(function() {
-//       resolve("slow")
-
-
-//       const text = 'INSERT INTO scraping1(data1, data2, data3) VALUES ($1, $2, $3)';
-//       const values = [title, rating,ratingcount];
-//       const res = pool.query(text, values);
-//       pool.end();
-//       console.log(title)
-
-
-//     }, 2000)
-//   })
-
-// }
+const prompt = require('prompt-sync')();
+const db = require('./pg-data');
 
 
 async function run () {
   try { 
-  const browser = await puppeteer.launch({
+
+  const browser = await puppeteer.launch({});
+
+/*   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
-    headless: false
-     });
+    headless: true
+     }); */
   let movie_url = 'https://www.imdb.com/';
 
 
-  const movie = prompt('What is your favorite movie?');
-  console.log(`Hey there ${movie}`);
+  const movie = prompt('What is your favorite movie? ');
+  console.log(`Searching data of ${movie}...`);
 
 
   const page = await browser.newPage();
@@ -81,10 +25,11 @@ async function run () {
   await page.focus('[type="text"]');
   await page.keyboard.type(movie, {delay: 500});
   //await page.waitFor(1000);
-  await page.keyboard.press("ArrowDown", {delay: 100});
-  await page.keyboard.press("Enter", {delay: 100});
+  await page.keyboard.press("ArrowDown", {delay: 150});
+  await page.keyboard.press("Enter", {delay: 150});
   await page.waitForNavigation();
 
+  
 
 /*   await page.waitFor(1000);
   const page2 = await browser.newPage();
@@ -114,7 +59,7 @@ async function run () {
 
   await browser.close();
   str = data.ratingCount.replace(/[^\d\.\-]/g, ""); 
-  insertData(data.title, Number(data.rating), Number(str));
+  db.insertData(data.title, Number(data.rating), Number(str));
  }
  catch (error) {
   console.log(error);

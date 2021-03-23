@@ -64,7 +64,7 @@ const pool = new Pool(config); */
 async function run () {
   try { 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
+    //executablePath: '/usr/bin/chromium-browser',
     headless: false
      });
   let url = 'https://www.airbnb.com/';
@@ -75,14 +75,17 @@ async function run () {
   await page.goto(url);
   await page.setGeolocation({latitude: 12.362335693698254, longitude: -87.02219314942484});    //Rivas latitude: 11.441372270201855, longitude: -85.82358742498008
                                                                                                //Leon  latitude: 12.362335693698254, longitude: -87.02219314942484
+  await page.waitForSelector('[class="_1xq16jy"]');
+  await page.focus('[class="_1xq16jy"]');
+  await page.keyboard.type("Leon", {delay: 500});
+  await page.keyboard.press("ArrowDown", {delay: 100});
+  await page.keyboard.press("Enter", {delay: 100});
+  const form = await page.$('[class="_12fun97"]');
+  await form.evaluate( form => form.click() );
+  const form2 = await page.$('[class="_12fun97"]');
+  await form2.evaluate( form => form.click() );
 
-
-  // await page.waitForSelector('[type="text"]');
-  // await page.focus('[type="text"]');
-  // await page.keyboard.type("Arrival", {delay: 500});
-  // await page.keyboard.press("ArrowDown", {delay: 100});
-  // await page.keyboard.press("Enter", {delay: 100});
-  //await page.waitForNavigation();
+  await page.waitForNavigation();
 
 
 /*   await page.waitFor(1000);
