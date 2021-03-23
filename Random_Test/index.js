@@ -29,6 +29,9 @@ async function run () {
   await page.keyboard.press("Enter", {delay: 150});
   await page.waitForNavigation();
 
+
+
+  
   
 
 /*   await page.waitFor(1000);
